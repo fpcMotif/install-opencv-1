@@ -1,7 +1,8 @@
 # install-opencv
-An easy-to-use script to install opencv on linux-based systems
+**An easy-to-use script to install opencv on linux-based systems**
 
-To install opencv with the default options (*my* default options), just run
+To install opencv (C++ & Python) with the default options (*my* default options),
+just run
 ```
 ./install_opencv.py
 ```
@@ -21,7 +22,7 @@ on Debian-based systems (such as Ubuntu).
 The code seems to work fine on Ubuntu 16.04, but is not thoroughly tested.
 
 ## options
-Run `./install_opencv.py` to see the full list of options.
+Run `./install_opencv.py --help` to see the full list of options.
 
 By default, the script will attempt to install opencv's prerequisites.
 To disable this behaviour (useful if you've already installed them yourself, for example),
