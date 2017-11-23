@@ -48,10 +48,6 @@ def chdir(dirpath):
 def install_opencv(args):
   # install opencv!
 
-  print("NOTE: this script assumes you have already installed all of the " \
-        "prerequisities; if you have not done so, rerun this script " \
-        "with the -p flag to see how to do it.\n")
-
   # print all of the selected installation options
   print("\nSelected installation options: ")
   for arg, val in vars(args).items():
@@ -101,15 +97,14 @@ def download_source(args, dirs):
 
   chdir(dirs['opencv'])
 
-  # git checkout tags/3.2.0
-  #git checkout tags/{}".format(args.tag)
+  # git checkout tags/3.3.1
   call("git checkout tags/{}".format(args.tag))
 
   # contributions module
-  if args.contrib:
-    print("WARNING: INSTALLING opencv_contrib IS NOT YET IMPLEMENTED\n")
-    #git clone https://github.com/Itseez/opencv_contrib.git
-    # NOTE: later will need to define for CMAKE OPENCV_EXTRA_MODULES_PATH=opencv_contrib/modules
+  #if args.contrib:
+  #  print("WARNING: INSTALLING opencv_contrib IS NOT YET IMPLEMENTED\n")
+  #git clone https://github.com/Itseez/opencv_contrib.git
+  # NOTE: later will need to define for CMAKE OPENCV_EXTRA_MODULES_PATH=opencv_contrib/modules
 
   chdir(dirs['root'])
 
@@ -172,18 +167,14 @@ def install(args, dirs):
 
 
 
-def print_prereqs():
-  # just prints a list of commands to run to get all the prerequisites for this script
+def install_prereqs():
+  # installs the prerequisites required to install opencv
+  print("Installing prerequisites...")
 
-  print("Before running this script, run the following to install all of the " \
-        "prerequisites:\n")
+  call("sudo apt-get update")
+  call("sudo apt-get upgrade")
 
-  s1 = "sudo apt-get update"
-  s2 = "sudo apt-get upgrade"
-  print("{}\n{}\n".format(s1, s2))
-
-  s3 = "sudo apt-get install build-essential cmake git pkg-config libjpeg8-dev libjasper-dev libpng12-dev libgtk2.0-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libatlas-base-dev gfortran python-dev python-numpy python3-dev python3-numpy\n"
-  print(s3)
+  call("sudo apt-get install build-essential cmake git pkg-config libjpeg8-dev libjasper-dev libpng12-dev libgtk2.0-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libatlas-base-dev gfortran python-dev python-numpy python3-dev python3-numpy")
 
 
 
@@ -193,8 +184,8 @@ def parse_command_line_args():
   parser = argparse.ArgumentParser(description = "Installs OpenCV")
 
   parser.add_argument('-t', '--tag',
-                      default = '3.2.0',
-                      help = "Tag of opencv to download & install (default: 3.2.0)")
+                      default = '3.3.1',
+                      help = "Tag of opencv to download & install (default: 3.3.1)")
 
   parser.add_argument('-f', '--force', action = 'store_true',
                       help = "'Force': don't ask user for confirmation to do anything")
@@ -203,14 +194,14 @@ def parse_command_line_args():
                       default = os.getcwd(),
                       help = "Directory where to build opencv. By default, creates an opencv directory in the present working directory")
 
-  parser.add_argument('-p', '--prereqs', action = 'store_true',
-                      help = "Show the prerequisities for this script and exit")
+  parser.add_argument('-p', '--prereqs', action = 'store_false',
+                      help = "Do NOT install OpenCV prerequisites. If you haven't already installed them, the installation will likely fail.")
 
-  parser.add_argument('-c', '--contrib', action = 'store_true',
-                      help = "Also install the opencv contributions modules (see github.com/opencv/opencv_contrib). NOT IMPLEMENTED YET.")
+  #parser.add_argument('-c', '--contrib', action = 'store_true',
+  #                    help = "Also install the opencv contributions modules (see github.com/opencv/opencv_contrib). NOT IMPLEMENTED YET.")
 
   parser.add_argument('-b', '--build-options-file', default = '',
-                      help = "JSON file from which to load the CMAKE build options.")
+                      help = "JSON file from which to load the CMAKE build options for the opencv build.")
 
   args = parser.parse_args()
 
@@ -221,9 +212,8 @@ def parse_command_line_args():
 if __name__ == '__main__':
   args = parse_command_line_args()
 
-  # does the user just want to see the prerequisites?
+  # does the user want to install the prereqs also?
   if args.prereqs is True:
-    print_prereqs()
-    sys.exit()
+    install_prereqs()
 
   install_opencv(args)
